@@ -33,6 +33,7 @@ data class CompositeRange(
         }
     }
     val sumFaulty = subRanges.sumOf {it.sumFaulty() }
+    val sumDoubleFaulty = subRanges.sumOf {it.sumDoubleFaulty() }
 }
 
 data class SimpleRange(
@@ -57,6 +58,29 @@ data class SimpleRange(
             if (it * multiplier + it in from..to) it * multiplier + it else 0
         }
     }
+
+    fun sumDoubleFaulty(): Long {
+        return (from..to).filter{isDoubleFaulty(it)}.sum()
+    }
+}
+
+fun isFaulty(number: Long): Boolean{
+    val length = number.toString().length
+    if(length % 2 == 1)
+        return false
+    val halfLength = length / 2
+    return number.toString().take(halfLength) == number.toString().drop(halfLength)
+}
+
+fun isDoubleFaulty(number: Long): Boolean{
+    val s = number.toString()
+    val n = s.length
+    (1..n/2).forEach{
+        if(n % it == 0 && s == s.take(it).repeat(n / it)){
+            return true
+        }
+    }
+    return false
 }
 
 fun main() {
@@ -66,7 +90,8 @@ fun main() {
     }
 
     fun part2(input: List<String>): Long {
-        return input.size.toLong()
+        val ranges = input.first().split(',').map(::CompositeRange)
+        return ranges.sumOf{it.sumDoubleFaulty}
     }
 
     // Test if implementation meets criteria from the description, like:
@@ -81,7 +106,18 @@ fun main() {
             "824824821-824824827,2121212118-2121212124")).toString() + " != 1227775554L"
     }
 
-    // Read the input from the `src/Day01.txt` file.
+    check(part2(listOf(
+        "11-22,95-115,998-1012,1188511880-1188511890,222220-222224," +
+            "1698522-1698528,446443-446449,38593856-38593862,565653-565659," +
+            "824824821-824824827,2121212118-2121212124"
+    )) == 4174379265){
+        (part2(listOf(
+            "11-22,95-115,998-1012,1188511880-1188511890,222220-222224," +
+                "1698522-1698528,446443-446449,38593856-38593862,565653-565659," +
+                "824824821-824824827,2121212118-2121212124"
+        )).toString() + " != 4174379265")
+    }
+
     part1(input).println()
     part2(input).println()
 }
