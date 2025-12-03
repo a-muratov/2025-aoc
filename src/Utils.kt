@@ -19,3 +19,12 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+fun Long.power(n: Long): Long {
+    var res = 1L
+    for(i in 1..n)
+        res *= this
+    return res
+}
+
+fun String.toListOfLongs() = this.map { it.toString().toLong() }
